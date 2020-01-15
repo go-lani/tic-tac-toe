@@ -2,8 +2,15 @@ import React, { Component } from 'react';
 
 export class Square extends Component {
   render() {
-    const { className, index } = this.props;
-    return <div className={className === 'first' ? 'square first' : 'square'}>{index}</div>;
+    const { square, className, index, isLastPlayer, addHistory } = this.props;
+    return (
+      <div
+        className={className === 'first' ? 'square first' : 'square'}
+        onClick={() => addHistory(isLastPlayer, index)}
+      >
+        {square}
+      </div>
+    );
   }
 }
 
