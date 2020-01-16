@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import Board from '../Board';
-import Square from '../Square';
+import React, { Component } from "react";
+import Board from "../Board";
+import Square from "../Square";
 
 export class Game extends Component {
   constructor(props) {
@@ -12,47 +12,52 @@ export class Game extends Component {
         {
           count: null,
           index: null,
-          history: Array(9).fill(null),
-        },
+          history: Array(9).fill(null)
+        }
       ],
-      isLastPlayer: true,
+      isLastPlayer: true
     };
-    Object.getOwnPropertyNames(Game.prototype).forEach(key => (this[key] = this[key].bind(this)));
+    Object.getOwnPropertyNames(Game.prototype).forEach(
+      key => (this[key] = this[key].bind(this))
+    );
   }
 
-  addHistory(player, index) {
+  addHistory(player, squareIndex) {
     const { squares, count, histories, isLastPlayer } = this.state;
-    if (squares[index]) return;
+    if (squares[squareIndex]) return;
 
     const newSquares = squares.slice();
-    newSquares[index] = isLastPlayer ? 'X' : 'O';
+    newSquares[squareIndex] = isLastPlayer ? "X" : "O";
 
     const newCount = squares.slice(0, count + 1).length;
-    const prevCount = Math.max(...histories.map((history, index) => history.count)) + 1;
+    const prevCount = Math.max(...histories.map(history => history.count)) + 1;
     const newHistory =
       prevCount > count
         ? histories.filter((history, index) => index <= count)
-        : histories.filter((history, index) => history.count < count + 1);
+        : histories.filter(history => history.count < count + 1);
 
     this.setState({
       squares: newSquares,
       count: newCount,
-      histories: [...newHistory, { count: count, index, history: newSquares }],
-      isLastPlayer: !isLastPlayer,
+      histories: [
+        ...newHistory,
+        { count: count, squareIndex, history: newSquares }
+      ],
+      isLastPlayer: !isLastPlayer
     });
   }
 
   jumpTo(index) {
-    const { histories, count } = this.state;
+    const { histories } = this.state;
 
-    const { history: refreshSquares } = histories.filter((history, idx) =>
-      idx <= index ? history : false,
+    const { history: prevSquares } = histories.filter((history, idx) =>
+      idx <= index ? history : false
     )[index];
 
     this.setState({
-      squares: [...refreshSquares],
+      squares: [...prevSquares],
       count: index,
-      isLastPlayer: index % 2 === 0,
+      isLastPlayer: index % 2 === 0
     });
   }
 
@@ -65,22 +70,28 @@ export class Game extends Component {
       [1, 4, 7],
       [2, 5, 8],
       [0, 4, 8],
-      [2, 4, 6],
+      [2, 4, 6]
     ];
+
     for (let i = 0; i < lines.length; i++) {
       const [a, b, c] = lines[i];
-      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      if (
+        squares[a] &&
+        squares[a] === squares[b] &&
+        squares[a] === squares[c]
+      ) {
         return `Winner is ${squares[a]}`;
       }
     }
-    return `Next Player ${this.state.isLastPlayer ? 'X' : 'O'}`;
+
+    return `Next Player ${this.state.isLastPlayer ? "X" : "O"}`;
   }
 
   render() {
     const { squares, isLastPlayer, histories } = this.state;
 
     const historyList = histories.map((history, index) => {
-      const guide = index ? 'Go to move #' + index : 'Go to game start';
+      const guide = index ? "Go to move #" + index : "Go to game start";
       return (
         <li key={index}>
           <button onClick={() => this.jumpTo(index)}>{guide}</button>
@@ -90,10 +101,10 @@ export class Game extends Component {
 
     const squaresList = squares.map((square, index) => (
       <Square
-        square={square}
         key={index}
-        index={index}
-        className={index % 3 ? null : 'first'}
+        square={square}
+        squareIndex={index}
+        className={index % 3 ? null : "first"}
         isLastPlayer={isLastPlayer}
         addHistory={this.addHistory}
       />
