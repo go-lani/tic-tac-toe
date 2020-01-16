@@ -2,17 +2,11 @@ import React, { Component } from "react";
 
 export class Square extends Component {
   render() {
-    const {
-      square,
-      className,
-      squareIndex,
-      isLastPlayer,
-      addHistory
-    } = this.props;
+    const { square, firstItem, squareIndex, onAddHistory } = this.props;
     return (
       <div
-        className={className === "first" ? "square first" : "square"}
-        onClick={() => addHistory(isLastPlayer, squareIndex)}
+        className={firstItem ? "square first" : "square"}
+        onClick={() => onAddHistory(squareIndex)}
       >
         {square}
       </div>
